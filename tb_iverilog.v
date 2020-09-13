@@ -20,7 +20,7 @@ module tb();
         nreset = 0;
       
       
-      #1000000000
+      #10000000
         $finish;
       
    end
