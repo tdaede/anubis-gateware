@@ -1,0 +1,38 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri Sep 11 09:27:12 2020
+[*]
+[dumpfile] "/home/thomas/sandbox/anubis-gateware/test.vcd"
+[dumpfile_mtime] "Fri Sep 11 09:20:38 2020"
+[dumpfile_size] 34217
+[savefile] "/home/thomas/sandbox/anubis-gateware/test.gtkw"
+[timestart] 14900
+[size] 2994 1751
+[pos] -1 -1
+*-11.000000 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.top.
+[sst_width] 433
+[signals_width] 383
+[sst_expanded] 1
+[sst_vpaned_height] 527
+@28
+tb.top.rst
+tb.top.clk
+@22
+tb.top.wb_to_68k.addr[22:0]
+@28
+tb.top.wb_to_68k.as_
+tb.top.wb_to_68k.lds_
+tb.top.wb_to_68k.uds_
+tb.top.wb_to_68k.dtack_
+@22
+tb.top.ao68000soc.bus__adr[29:0]
+tb.top.ao68000soc.bus__sel[3:0]
+tb.top.ao68000soc.bus__dat_r[31:0]
+@28
+tb.top.ao68000soc.bus__cyc
+tb.top.ao68000soc.bus__stb
+tb.top.ao68000soc.bus__ack
+[pattern_trace] 1
+[pattern_trace] 0
