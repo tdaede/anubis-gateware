@@ -64,9 +64,9 @@ class System(Elaboratable):
         for i in range(0, 8):
             m.d.comb += leds[i].eq(self.ao68000soc.bus.adr[i+15])
 
-        bus_assert = Signal(reset=1)
+        bus_assert = self.wb_to_68k.bus_assert
 
-        m.d.comb += platform.request("bg").o.eq(0)
+        m.d.comb += platform.request("bg").o.eq(~self.wb_to_68k.bg_)
 
         # section of signals controlled by rw_
         m.d.comb += plat_data.o.eq(self.wb_to_68k.o_data)
@@ -100,7 +100,7 @@ class System(Elaboratable):
         m.d.comb += rw_.oe.eq(bus_assert)
 
         # temporary hack for led counter
-        m.d.comb += self.wb_to_68k.i_data.eq(0)
+        #m.d.comb += self.wb_to_68k.i_data.eq(0)
 
 
         # /----------------------------------------------------------\
