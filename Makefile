@@ -17,7 +17,7 @@ simulate: a.out
 	./a.out
 
 top.cpp: $(VERILOG_SOURCE) top.il
-	yosys -p "read_verilog $(VERILOG_SOURCE); read_rtlil top.il; write_cxxrtl top.cpp"
+	yosys -p "read_verilog $(VERILOG_SOURCE); read_rtlil top.il; delete w:$$verilog_initial_trigger; write_cxxrtl top.cpp"
 
 tb: top.cpp main.cpp
 	c++ -g -O3 -std=c++14 -I `yosys-config --datdir`/include main.cpp -o tb

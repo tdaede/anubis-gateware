@@ -6,9 +6,13 @@ from nmigen.sim import *
 
 # 32 bit wishbone to 16 bit 68000 bus
 class WishboneTo68000(Elaboratable):
-    def __init__(self, wb):
+    def __init__(self, wb, wb_fc, wb_ipl):
         self.wb = wb
+        self.wb_fc = wb_fc
+        self.wb_ipl = wb_ipl
         self.addr = Signal(23)
+        self.fc = Signal(3)
+        self.ipl = Signal(3)
         self.o_data = Signal(16)
         self.i_data = Signal(16)
         self.uds_ = Signal(reset = 1)
@@ -16,17 +20,28 @@ class WishboneTo68000(Elaboratable):
         self.as_ = Signal(reset = 1)
         self.rw_ = Signal(reset = 1)
         self.dtack_ = Signal(reset = 1)
+        self.br_ = Signal(reset = 1)
+        self.bg_ = Signal(reset = 1)
+        self.bgack_ = Signal(reset = 1)
+        self.bus_assert = Signal(reset = 1)
 
     def elaborate(self, platform):
         m = Module()
-        i_data_high = Signal(16)
+        i_data_high = Signal(16) # register to hold high bytes (low address)
+                                 # of 32 bit read
         #m.d.comb += self.rw_.eq(~self.wb.we)
         m.d.comb += self.wb.dat_r.eq(Cat(self.i_data, i_data_high))
+        m.d.comb += self.fc.eq(self.wb_fc)
+        m.d.comb += self.wb_ipl.eq(self.ipl)
         with m.FSM() as fsm:
             with m.State("WAIT0"):
                 m.d.comb += self.as_.eq(1)
-                with m.If(self.wb.cyc & self.wb.stb):
-                    with m.If(self.wb.sel[2] | self.wb.sel[3]):
+                with m.If(self.br_ == 0):
+                    m.next = "BUS_GRANT"
+                with m.Elif(self.wb.cyc & self.wb.stb):
+                    with m.If(self.wb_fc == 0x7):
+                        m.next = "ADDR1" # only do a 16 bit read for int ack
+                    with m.Elif(self.wb.sel[2] | self.wb.sel[3]):
                         m.next = "ADDR0"
                     with m.Else():
                         m.next = "ADDR1"
@@ -77,13 +92,28 @@ class WishboneTo68000(Elaboratable):
                 m.d.comb += self.addr.eq((self.wb.adr << 1) + 1)
                 m.d.comb += self.wb.ack.eq(1)
                 m.next = "WAIT0"
+            with m.State("BUS_GRANT"):
+                m.d.comb += self.bg_.eq(0)
+                m.d.comb += self.bus_assert.eq(0)
+                m.next = "BUS_GRANT"
+                with m.If(self.br_ == 1):
+                    m.next = "WAIT0"
+                with m.If(self.bgack_ == 0):
+                    m.next = "BUS_GRANT_ACK"
+            with m.State("BUS_GRANT_ACK"):
+                m.d.comb += self.bus_assert.eq(0)
+                m.next = "BUS_GRANT_ACK"
+                with m.If(self.bgack_ == 1):
+                    m.next = "WAIT0"
 
         return m
 
 class Test(unittest.TestCase):
     def test_simple(self):
         wb = wishbone.Interface(addr_width = 30, data_width = 32, granularity = 8, features = ["err", "rty", "cti", "bte", "lock"])
-        dut = WishboneTo68000(wb)
+        wb_fc = Signal(3)
+        wb_ipl = Signal(3)
+        dut = WishboneTo68000(wb, wb_fc, wb_ipl)
 
         def sim_test():
             # test byte reads
@@ -142,6 +172,30 @@ class Test(unittest.TestCase):
             while (yield wb.ack) == 0:
                 yield Tick()
                 yield Delay(1e-9)
+            yield Tick()
+
+            # test interrupt
+            yield wb.adr.eq(0xfffffff9) # 32 bit level lower 3 bits
+            yield wb_ipl.eq(1)
+            yield wb_fc.eq(0x7)
+            yield wb.cyc.eq(1)
+            yield wb.stb.eq(1)
+            yield wb.sel.eq(0xf)
+            yield wb.we.eq(0)
+            while ((yield dut.lds_) & (yield dut.uds_)) != 0:
+                yield Tick()
+                yield Delay(1e-9)
+            self.assertEqual((yield dut.addr), ((0xfffffff9 << 1) + 1) & 0x7fffff)
+            self.assertEqual((yield dut.as_), 0)
+            yield dut.i_data.eq((yield dut.addr))
+            yield dut.dtack_.eq(0)
+            yield Tick()
+            yield Delay(1e-9)
+            yield wb.cyc.eq(0)
+            yield wb.stb.eq(0)
+            self.assertEqual((yield dut.as_), 1)
+            self.assertEqual((yield dut.lds_), 1)
+            self.assertEqual((yield dut.uds_), 1)
             yield Tick()
 
 
