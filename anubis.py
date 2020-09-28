@@ -25,28 +25,28 @@ class System(Elaboratable):
         m.d.comb += ResetSignal().eq(platform.request("button_fire",0))
 
         platform.add_resources([
-            Resource("addr", 0, Pins("24- 25+ 25- 26+ 26- 27+ 27- 0+ 0- 1+ 1- 2+ 2- 3+ 3- 5- 6+ 6- 7+ 7- 8+ 8- 9+", dir="io", conn=("gpio", 0))),
-            Resource("fc", 0, Pins("5+ 4- 4+", dir="io", conn=("gpio", 0))),
-            Resource("data", 0, Pins("20- 20+ 19- 19+ 18- 18+ 17- 17+ 10+ 10- 11+ 11- 12+ 12- 13+ 13-", dir="io", conn=("gpio", 0))),
-            #Resource("dtack", 0, Pins("9-", dir="i", conn=("gpio", 0))),
-            #Resource("reset", 0, Pins("22-", dir="i", conn=("gpio", 0))),
+            Resource("addr", 0, Pins("24+ 25- 25+ 26- 26+ 27- 27+ 0- 0+ 1- 1+ 2- 2+ 3- 3+ 5+ 6- 6+ 7- 7+ 8- 8+ 9-", dir="io", conn=("gpio", 0))),
+            Resource("fc", 0, Pins("5- 4+ 4-", dir="io", conn=("gpio", 0))),
+            Resource("data", 0, Pins("20+ 20- 19+ 19- 18+ 18- 17+ 17- 10+ 10- 11+ 11- 12+ 12- 13+ 13-", dir="io", conn=("gpio", 0))),
+            #Resource("dtack", 0, Pins("9+", dir="i", conn=("gpio", 0))),
+            #Resource("reset", 0, Pins("22+", dir="i", conn=("gpio", 0))),
             # changed: move dtack to reset pin because of oops on rev 1 pcb
             # then use original dtack line as data_dir
-            Resource("dtack", 0, Pins("22-", dir="i", conn=("gpio", 0))),
-            Resource("data_dir", 0, Pins("9-", dir="o", conn=("gpio", 0))),
-            Resource("ipl", 0, Pins("24+ 23- 23+", dir="i", conn=("gpio", 0))),
-            Resource("clk", 0, Pins("22+", dir="i", conn=("gpio", 0))),
-            Resource("br", 0, Pins("21-", dir="i", conn=("gpio", 0))),
-            Resource("bgack", 0, Pins("21+", dir="i", conn=("gpio", 0))),
+            Resource("dtack", 0, Pins("22+", dir="i", conn=("gpio", 0))),
+            Resource("data_dir", 0, Pins("9+", dir="o", conn=("gpio", 0))),
+            Resource("ipl", 0, Pins("24- 23+ 23-", dir="i", conn=("gpio", 0))),
+            Resource("clk", 0, Pins("22-", dir="i", conn=("gpio", 0))),
+            Resource("br", 0, Pins("21+", dir="i", conn=("gpio", 0))),
+            Resource("bgack", 0, Pins("21-", dir="i", conn=("gpio", 0))),
             # bg goes through an open collector inverter
-            Resource("bg", 0, Pins("16-", dir="o", conn=("gpio", 0))),
+            Resource("bg", 0, Pins("16+", dir="o", conn=("gpio", 0))),
             # addr_dir: 0 = read, 1 = write
             # controls: addr, fc, as, uds, lds, rw
-            Resource("addr_dir", 0, Pins("16+", dir="o", conn=("gpio", 0))),
-            Resource("as_", 0, Pins("15-", dir="io", conn=("gpio", 0))),
-            Resource("uds_", 0, Pins("15+", dir="io", conn=("gpio", 0))),
-            Resource("rw_", 0, Pins("14-", dir="io", conn=("gpio", 0))),
-            Resource("lds_", 0, Pins("14+", dir="io", conn=("gpio", 0)))
+            Resource("addr_dir", 0, Pins("16-", dir="o", conn=("gpio", 0))),
+            Resource("as_", 0, Pins("15+", dir="io", conn=("gpio", 0))),
+            Resource("uds_", 0, Pins("15-", dir="io", conn=("gpio", 0))),
+            Resource("rw_", 0, Pins("14+", dir="io", conn=("gpio", 0))),
+            Resource("lds_", 0, Pins("14-", dir="io", conn=("gpio", 0)))
         ])
 
         timer  = Signal(24)
