@@ -63,9 +63,9 @@ class System(Elaboratable):
         #self.bus = wishbone.Interface(addr_width = 30, data_width = 32, granularity = 8, features = ["err", "rty", "cti", "bte", "lock"])
         self.ao68000soc = ao68000soc()
         self.addr_byte = Signal(24)
-        self.wb_to_68k = WishboneTo68000(self.ao68000soc.bus)
-        self.boot_rom = M68KROM(0x4, '../x68kd11s/iplromxv.dat', 0x10000)
-        self.ipl_rom = M68KROM(17, '../x68kd11s/iplromxv.dat', 0x0)
+        self.wb_to_68k = WishboneTo68000(self.ao68000soc.bus, self.ao68000soc.fc, self.ao68000soc.ipl)
+        self.boot_rom = M68KROM(0x4, '../x68kd11s/iplrom/iplromxv.dat', 0x10000)
+        self.ipl_rom = M68KROM(17, '../x68kd11s/iplrom/iplromxv.dat', 0x0)
         self.ram = M68KRAM(16)
         pass
 

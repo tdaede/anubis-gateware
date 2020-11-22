@@ -1,7 +1,6 @@
 import unittest
 from nmigen import *
 from nmigen_soc import wishbone
-from nmigen.sim import *
 
 
 # 32 bit wishbone to 16 bit 68000 bus

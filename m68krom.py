@@ -1,7 +1,6 @@
 import unittest
 from nmigen import *
 from nmigen_soc import wishbone
-from nmigen.sim import *
 
 class M68KROM(Elaboratable):
     def __init__(self, addr_width, filename, file_offset):
