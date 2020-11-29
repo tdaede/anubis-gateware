@@ -27,7 +27,7 @@ class System(Elaboratable):
         platform.add_resources([
             Resource("addr", 0, Pins("24+ 25- 25+ 26- 26+ 27- 27+ 0- 0+ 1- 1+ 2- 2+ 3- 3+ 5+ 6- 6+ 7- 7+ 8- 8+ 9-", dir="io", conn=("gpio", 0))),
             Resource("fc", 0, Pins("5- 4+ 4-", dir="io", conn=("gpio", 0))),
-            Resource("data", 0, Pins("20+ 20- 19+ 19- 18+ 18- 17+ 17- 10+ 10- 11+ 11- 12+ 12- 13+ 13-", dir="io", conn=("gpio", 0))),
+            Resource("data", 0, Pins("20+ 20- 19+ 19- 18+ 18- 17+ 17- 13+ 13- 12+ 12- 11+ 11- 10+ 10-", dir="io", conn=("gpio", 0))),
             #Resource("dtack", 0, Pins("9+", dir="i", conn=("gpio", 0))),
             #Resource("reset", 0, Pins("22+", dir="i", conn=("gpio", 0))),
             # changed: move dtack to reset pin because of oops on rev 1 pcb

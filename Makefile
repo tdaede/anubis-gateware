@@ -25,4 +25,13 @@ tb: top.cpp main.cpp
 cxxrtl: tb
 	./tb
 
+exerciser.o: exerciser.S
+	m68k-linux-gnu-as -mcpu=68000 exerciser.S -o exerciser.o
+
+exerciser: exerciser.o exerciser.ld
+	m68k-linux-gnu-ld exerciser.o -T exerciser.ld -o exerciser
+
+exerciser.bin: exerciser
+	m68k-linux-gnu-objcopy -O binary --pad-to=0x10 exerciser exerciser.bin
+
 PHONY: simulate cxxrtl

@@ -15,7 +15,7 @@ class M68KROM(Elaboratable):
 
     def elaborate(self, platform):
         m = Module()
-        m.submodules.rdport = rdport = self.mem.read_port()
+        m.submodules.rdport = rdport = self.mem.read_port(domain="comb")
         m.d.comb += rdport.addr.eq(self.addr)
         m.d.comb += self.data.eq(rdport.data)
         return m
